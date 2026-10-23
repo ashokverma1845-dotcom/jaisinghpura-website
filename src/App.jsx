@@ -97,6 +97,16 @@ ${url}`;
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("Canvas is not supported");
 
+      // Wait for Devanagari fonts before drawing so Hindi text is not replaced by boxes/dashes.
+      if (document.fonts?.ready) await document.fonts.ready;
+      if (document.fonts?.load) {
+        await Promise.all([
+          document.fonts.load("700 28px 'Noto Sans Devanagari'"),
+          document.fonts.load("800 56px 'Noto Sans Devanagari'"),
+          document.fonts.load("500 22px 'Noto Sans Devanagari'"),
+        ]);
+      }
+
       const background = ctx.createLinearGradient(0, 0, 1200, 630);
       background.addColorStop(0, "#1c0907");
       background.addColorStop(0.55, "#552116");
@@ -104,116 +114,136 @@ ${url}`;
       ctx.fillStyle = background;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Decorative rings stay behind the candidate portrait.
       ctx.strokeStyle = "rgba(231, 194, 125, 0.16)";
       ctx.lineWidth = 2;
-      [205, 255, 305].forEach((radius) => {
+      [185, 230, 275].forEach((radius) => {
         ctx.beginPath();
-        ctx.arc(920, 300, radius, 0, Math.PI * 2);
+        ctx.arc(930, 285, radius, 0, Math.PI * 2);
         ctx.stroke();
       });
 
-      ctx.fillStyle = "#e7c27d";
-      ctx.fillRect(76, 94, 54, 3);
-      ctx.fillRect(143, 94, 8, 3);
+      // Keep the SL brand mark separate from the candidate's photograph.
+      ctx.beginPath();
+      ctx.arc(94, 88, 29, 0, Math.PI * 2);
+      ctx.fillStyle = "#f4dfae";
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(94, 88, 24, 0, Math.PI * 2);
+      ctx.fillStyle = "#4a1a10";
+      ctx.fill();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#f6d58f";
+      ctx.font = "800 22px Georgia, serif";
+      ctx.fillText("SL", 94, 88);
 
-      const photo = new Image();
-      photo.src = "/shankar-lal.jpg";
-      if (photo.decode) {
-        await photo.decode();
-      } else {
-        await new Promise((resolve, reject) => {
-          photo.onload = resolve;
-          photo.onerror = reject;
-        });
-      }
+      const loadImage = async (src) => {
+        const image = new Image();
+        image.src = src;
+        if (image.decode) {
+          await image.decode();
+        } else {
+          await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = reject;
+          });
+        }
+        return image;
+      };
 
+      const [symbolImage, photo] = await Promise.all([
+        loadImage("/jackfruit-symbol.png"),
+        loadImage("/shankar-lal.jpg"),
+      ]);
+
+      // Candidate photo: circular portrait on the right, never inside the SL logo.
       ctx.save();
       ctx.beginPath();
-      ctx.arc(920, 282, 153, 0, Math.PI * 2);
+      ctx.arc(930, 272, 145, 0, Math.PI * 2);
       ctx.clip();
-      const scale = Math.max(306 / photo.width, 306 / photo.height);
-      const width = photo.width * scale;
-      const height = photo.height * scale;
-      ctx.drawImage(photo, 920 - width / 2, 282 - height / 2, width, height);
+      const photoScale = Math.max(290 / photo.width, 290 / photo.height);
+      const photoWidth = photo.width * photoScale;
+      const photoHeight = photo.height * photoScale;
+      ctx.drawImage(photo, 930 - photoWidth / 2, 272 - photoHeight / 2, photoWidth, photoHeight);
       ctx.restore();
 
       ctx.beginPath();
-      ctx.arc(920, 282, 160, 0, Math.PI * 2);
+      ctx.arc(930, 272, 152, 0, Math.PI * 2);
       ctx.strokeStyle = "#e7c27d";
       ctx.lineWidth = 6;
       ctx.stroke();
 
+      // Election symbol: contain the full jackfruit image (do not crop it).
+      ctx.save();
       ctx.beginPath();
-      ctx.arc(920, 466, 38, 0, Math.PI * 2);
-      ctx.fillStyle = "#35120d";
-      ctx.fill();
+      ctx.arc(930, 455, 47, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.fillStyle = "#f7efda";
+      ctx.fillRect(883, 408, 94, 94);
+      const symbolScale = Math.min(82 / symbolImage.width, 82 / symbolImage.height);
+      const symbolWidth = symbolImage.width * symbolScale;
+      const symbolHeight = symbolImage.height * symbolScale;
+      ctx.drawImage(symbolImage, 930 - symbolWidth / 2, 455 - symbolHeight / 2, symbolWidth, symbolHeight);
+      ctx.restore();
+      ctx.beginPath();
+      ctx.arc(930, 455, 49, 0, Math.PI * 2);
       ctx.strokeStyle = "#d9b46c";
       ctx.lineWidth = 3;
       ctx.stroke();
-      ctx.fillStyle = "#ffe5ac";
-      ctx.font = "bold 30px Georgia, serif";
-      ctx.textAlign = "center";
-      ctx.fillText("SL", 920, 477);
 
       ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
       ctx.fillStyle = "#e7c27d";
-      ctx.font = "600 27px 'Noto Sans Devanagari', sans-serif";
-      ctx.fillText("राम-राम सा!", 76, 151);
+      ctx.font = "700 27px 'Noto Sans Devanagari', sans-serif";
+      ctx.fillText("राम-राम सा!", 145, 96);
 
       ctx.fillStyle = "#fff0d1";
       ctx.font = "800 57px 'Noto Sans Devanagari', sans-serif";
-      ctx.fillText("शंकर लाल", 76, 247);
-      ctx.fillText("सांभरिया", 76, 323);
+      ctx.fillText("शंकर लाल", 76, 205);
+      ctx.fillText("सांभरिया", 76, 274);
 
       ctx.fillStyle = "#e7c27d";
-      ctx.fillRect(78, 359, 365, 2);
+      ctx.fillRect(78, 302, 475, 2);
 
       ctx.fillStyle = "#f6dfb6";
-      ctx.font = "500 25px 'Noto Sans Devanagari', sans-serif";
-      ctx.fillText("ग्राम पंचायत जयसिंहपुरा · जयपुर · राजस्थान", 76, 410);
+      const villageText = "ग्राम पंचायत जयसिंहपुरा · जयपुर · राजस्थान";
+      let villageSize = 23;
+      ctx.font = `500 ${villageSize}px 'Noto Sans Devanagari', sans-serif`;
+      while (ctx.measureText(villageText).width > 570 && villageSize > 15) {
+        villageSize -= 1;
+        ctx.font = `500 ${villageSize}px 'Noto Sans Devanagari', sans-serif`;
+      }
+      ctx.fillText(villageText, 76, 347);
 
       ctx.fillStyle = "#e5d0ae";
       ctx.font = "500 21px 'Noto Sans Devanagari', sans-serif";
-      ctx.fillText("सरपंच पद के उम्मीदवार", 76, 460);
+      ctx.fillText("सरपंच पद के उम्मीदवार", 76, 391);
 
-      // Temporary election-symbol announcement badge; no unofficial symbol is shown.
       const badgeX = 76;
-      const badgeY = 482;
-      const badgeW = 455;
-      const badgeH = 52;
+      const badgeY = 414;
+      const badgeW = 500;
+      const badgeH = 56;
       ctx.fillStyle = "rgba(231, 194, 125, 0.12)";
       ctx.fillRect(badgeX, badgeY, badgeW, badgeH);
       ctx.strokeStyle = "#d9b46c";
       ctx.lineWidth = 1.5;
       ctx.strokeRect(badgeX, badgeY, badgeW, badgeH);
-
-      ctx.beginPath();
-      ctx.arc(102, 508, 15, 0, Math.PI * 2);
-      ctx.fillStyle = "#e7c27d";
-      ctx.fill();
-      ctx.strokeStyle = "#fff0d1";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(102, 508, 7, 0, Math.PI * 2);
-      ctx.strokeStyle = "#35120d";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
       ctx.fillStyle = "#ffe5ac";
-      ctx.font = "700 17px 'Noto Sans Devanagari', sans-serif";
-      ctx.fillText("चुनाव चिह्न जल्द घोषित होगा", 128, 505);
-      ctx.fillStyle = "#e5d0ae";
-      ctx.font = "12px 'Noto Sans Devanagari', sans-serif";
-      ctx.fillText("आधिकारिक घोषणा की प्रतीक्षा", 128, 523);
+      ctx.font = "700 21px 'Noto Sans Devanagari', sans-serif";
+      ctx.fillText("चुनाव चिह्न: कटहल  ·  क्रमांक 3", 94, 449);
 
       ctx.fillStyle = "#d9b46c";
-      ctx.font = "500 15px sans-serif";
-      ctx.fillText("WEBSITE", 78, 568);
+      ctx.font = "700 14px sans-serif";
+      ctx.fillText("WEBSITE", 78, 514);
       ctx.fillStyle = "#f8e9ca";
       ctx.font = "14px sans-serif";
-      const displayUrl = url.length > 48 ? `${url.slice(0, 45)}...` : url;
-      ctx.fillText(displayUrl, 78, 592);
+      const displayUrl = url.length > 54 ? `${url.slice(0, 51)}...` : url;
+      ctx.fillText(displayUrl, 78, 540);
+
+      ctx.fillStyle = "rgba(246, 223, 182, 0.72)";
+      ctx.font = "13px 'Noto Sans Devanagari', sans-serif";
+      ctx.fillText("आपका विश्वास · हमारा संकल्प", 78, 582);
 
       const blob = await new Promise((resolve) =>
         canvas.toBlob(resolve, "image/jpeg", 0.92)
@@ -388,12 +418,14 @@ ${url}`;
             <span>सांभरिया</span>
           </h1>
 
-          <a className="hero-election-status" href="#chunav-chinh" aria-label="चुनाव चिह्न की स्थिति देखें">
-            <span className="status-orbit" aria-hidden="true"><i /><i /><i /></span>
+          <a className="hero-election-status hero-symbol-confirmed" href="#chunav-chinh" aria-label="क्रमांक 3 कटहल चुनाव चिह्न देखें">
+            <span className="hero-symbol-thumb">
+              <img src="/jackfruit-symbol.png" alt="कटहल" />
+            </span>
             <span className="status-copy">
-              <small>चुनाव चिह्न की स्थिति</small>
-              <b>आधिकारिक घोषणा प्रतीक्षित</b>
-              <em>घोषणा होते ही यहाँ अपडेट होगा <ArrowRight size={14} /></em>
+              <small>चुनाव चिह्न · क्रमांक 3</small>
+              <b>कटहल</b>
+              <em>चिह्न की जानकारी देखें <ArrowRight size={14} /></em>
             </span>
             <span className="status-arrow"><ArrowUpRight size={18} /></span>
           </a>
@@ -545,30 +577,28 @@ ${url}`;
 
         <div className="symbol-layout">
           <div>
-            <p className="section-kicker">आधिकारिक चुनाव चिह्न</p>
+            <p className="section-kicker">चुनाव चिह्न · क्रमांक 3</p>
             <h2 className="section-heading">
               चुनाव चिह्न
               <br />
               <span>यहाँ देखें।</span>
             </h2>
             <p className="symbol-description">
-              चुनाव चिह्न की आधिकारिक घोषणा होने पर उसकी तस्वीर और नाम
-              यहाँ जोड़े जाएँगे।
+              मतपत्र में शंकर लाल सांभरिया के नाम के सामने क्रमांक 3 पर दिखाया गया चिह्न — कटहल।
             </p>
           </div>
 
           <div className="symbol-card">
-            <div className="symbol-placeholder symbol-pending">
-              <div className="pending-mark" aria-hidden="true">
-                <span className="pending-ring pending-ring-one" />
-                <span className="pending-ring pending-ring-two" />
-                <span className="pending-center"><b>?</b></span>
-                <i className="pending-dot dot-one" /><i className="pending-dot dot-two" />
-                <i className="pending-dot dot-three" /><i className="pending-dot dot-four" />
-              </div>
-              <span className="pending-eyebrow">OFFICIAL UPDATE AWAITS</span>
-              <b>चुनाव चिह्न जल्द यहाँ होगा</b>
-              <small>अभी आधिकारिक चिह्न घोषित नहीं हुआ है</small>
+            <div className="symbol-placeholder symbol-confirmed">
+              <img
+                className="jackfruit-symbol-image"
+                src="/jackfruit-symbol.png"
+                alt="कटहल चुनाव चिह्न"
+                loading="lazy"
+              />
+              <span className="symbol-label">चुनाव चिह्न · क्रमांक 3</span>
+              <b>कटहल</b>
+              <small>शंकर लाल सांभरिया</small>
             </div>
             <p>शंकर लाल सांभरिया</p>
             <small>ग्राम पंचायत जयसिंहपुरा · जयपुर</small>

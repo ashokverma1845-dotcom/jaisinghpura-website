@@ -72,18 +72,18 @@ export default function App() {
 
   async function shareWebsite() {
     const url = `${window.location.origin}${window.location.pathname}`;
-    const title = "शंकर लाल सांभरिया | जयसिंहपुरा";
+    const title = "शंकर लाल सांभरिया | ग्राम पंचायत जयसिंहपुरा";
     const shareText = `🙏 राम-राम सा! 🙏
 
 श्री शंकर लाल सांभरिया जी
-सरपंच पद के उम्मीदवार · जयसिंहपुरा
+सरपंच पद के उम्मीदवार · ग्राम पंचायत जयसिंहपुरा
 
 गाँव के उज्ज्वल भविष्य और विकास की नई दिशा के लिए,
 आपका अमूल्य मत और आशीर्वाद सादर अपेक्षित है।
 
 आपका विश्वास, हमारा संकल्प।
 
-🌹 जयसिंहपुरा · जयपुर · राजस्थान 🌹
+🌹 ग्राम पंचायत जयसिंहपुरा · जयपुर · राजस्थान 🌹
 
 🔗 उम्मीदवार का परिचय एवं चुनाव संबंधी जानकारी:
 ${url}`;
@@ -170,19 +170,50 @@ ${url}`;
 
       ctx.fillStyle = "#f6dfb6";
       ctx.font = "500 25px 'Noto Sans Devanagari', sans-serif";
-      ctx.fillText("जयसिंहपुरा · जयपुर · राजस्थान", 76, 410);
+      ctx.fillText("ग्राम पंचायत जयसिंहपुरा · जयपुर · राजस्थान", 76, 410);
 
       ctx.fillStyle = "#e5d0ae";
       ctx.font = "500 21px 'Noto Sans Devanagari', sans-serif";
       ctx.fillText("सरपंच पद के उम्मीदवार", 76, 460);
 
+      // Temporary election-symbol announcement badge; no unofficial symbol is shown.
+      const badgeX = 76;
+      const badgeY = 482;
+      const badgeW = 455;
+      const badgeH = 52;
+      ctx.fillStyle = "rgba(231, 194, 125, 0.12)";
+      ctx.fillRect(badgeX, badgeY, badgeW, badgeH);
+      ctx.strokeStyle = "#d9b46c";
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(badgeX, badgeY, badgeW, badgeH);
+
+      ctx.beginPath();
+      ctx.arc(102, 508, 15, 0, Math.PI * 2);
+      ctx.fillStyle = "#e7c27d";
+      ctx.fill();
+      ctx.strokeStyle = "#fff0d1";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(102, 508, 7, 0, Math.PI * 2);
+      ctx.strokeStyle = "#35120d";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffe5ac";
+      ctx.font = "700 17px 'Noto Sans Devanagari', sans-serif";
+      ctx.fillText("चुनाव चिह्न जल्द घोषित होगा", 128, 505);
+      ctx.fillStyle = "#e5d0ae";
+      ctx.font = "12px 'Noto Sans Devanagari', sans-serif";
+      ctx.fillText("आधिकारिक घोषणा की प्रतीक्षा", 128, 523);
+
       ctx.fillStyle = "#d9b46c";
-      ctx.font = "500 17px sans-serif";
-      ctx.fillText("WEBSITE", 78, 535);
+      ctx.font = "500 15px sans-serif";
+      ctx.fillText("WEBSITE", 78, 568);
       ctx.fillStyle = "#f8e9ca";
-      ctx.font = "16px sans-serif";
+      ctx.font = "14px sans-serif";
       const displayUrl = url.length > 48 ? `${url.slice(0, 45)}...` : url;
-      ctx.fillText(displayUrl, 78, 563);
+      ctx.fillText(displayUrl, 78, 592);
 
       const blob = await new Promise((resolve) =>
         canvas.toBlob(resolve, "image/jpeg", 0.92)
@@ -244,7 +275,7 @@ ${url}`;
   function sendMessage(event) {
     event.preventDefault();
     const text =
-      `नमस्कार,\nजयसिंहपुरा से जुड़ा मेरा सुझाव/सवाल:\n${message}`;
+      `नमस्कार,\nग्राम पंचायत जयसिंहपुरा से जुड़ा मेरा सुझाव/सवाल:\n${message}`;
     window.open(
       `https://wa.me/?text=${encodeURIComponent(text)}`,
       "_blank",
@@ -273,7 +304,7 @@ ${url}`;
           </div>
 
           <p className="loader-welcome">राम-राम सा!</p>
-          <h1 className="loader-title">जयसिंहपुरा</h1>
+          <h1 className="loader-title">ग्राम पंचायत<br /> जयसिंहपुरा</h1>
 
           <div className="loader-divider">✳</div>
 
@@ -306,7 +337,7 @@ ${url}`;
     <main className="site-reveal">
       <div className="topline">
         <span className="topline-dot" />
-        <span>जयसिंहपुरा, जयपुर · राजस्थान</span>
+        <span>ग्राम पंचायत जयसिंहपुरा, जयपुर · राजस्थान</span>
         <span className="topline-star">✳</span>
       </div>
 
@@ -332,7 +363,7 @@ ${url}`;
           <a href="#parichay" onClick={closeMenu}>परिचय</a>
           <a href="#mudde" onClick={closeMenu}>गाँव के मुद्दे</a>
           <a href="#chunav-chinh" onClick={closeMenu}>चुनाव चिह्न</a>
-          <a href="#gaon" onClick={closeMenu}>जयसिंहपुरा</a>
+          <a href="#gaon" onClick={closeMenu}>ग्राम पंचायत जयसिंहपुरा</a>
           <a className="nav-contact" href="#sampark" onClick={closeMenu}>
             जनसंपर्क <ArrowUpRight size={15} />
           </a>
@@ -344,7 +375,7 @@ ${url}`;
         <div className="hero-copy">
           <div className="eyebrow">
             <span className="eyebrow-line" />
-            उम्मीदवार परिचय · जयसिंहपुरा
+            उम्मीदवार परिचय · ग्राम पंचायत जयसिंहपुरा
           </div>
 
           <p className="hero-location">
@@ -357,13 +388,18 @@ ${url}`;
             <span>सांभरिया</span>
           </h1>
 
-          <div className="hero-ribbon">
-            <span className="ribbon-symbol">✳</span>
-            <span>सरपंच चुनाव · उम्मीदवार परिचय</span>
-          </div>
+          <a className="hero-election-status" href="#chunav-chinh" aria-label="चुनाव चिह्न की स्थिति देखें">
+            <span className="status-orbit" aria-hidden="true"><i /><i /><i /></span>
+            <span className="status-copy">
+              <small>चुनाव चिह्न की स्थिति</small>
+              <b>आधिकारिक घोषणा प्रतीक्षित</b>
+              <em>घोषणा होते ही यहाँ अपडेट होगा <ArrowRight size={14} /></em>
+            </span>
+            <span className="status-arrow"><ArrowUpRight size={18} /></span>
+          </a>
 
           <p className="hero-description">
-            परिचय जानें, जयसिंहपुरा से जुड़े स्थानीय मुद्दों के बारे में
+            परिचय जानें, ग्राम पंचायत जयसिंहपुरा से जुड़े स्थानीय मुद्दों के बारे में
             पढ़ें और गाँव के लिए अपने विचार एवं सुझाव साझा करें।
           </p>
 
@@ -398,7 +434,7 @@ ${url}`;
               <span className="caption-overline">उम्मीदवार परिचय</span>
               <b>शंकर लाल सांभरिया</b>
               <span className="caption-location">
-                <MapPin size={13} /> जयसिंहपुरा, जयपुर
+                <MapPin size={13} /> ग्राम पंचायत जयसिंहपुरा, जयपुर
               </span>
             </div>
             <span className="portrait-seal">ज</span>
@@ -406,7 +442,7 @@ ${url}`;
           <div className="portrait-foot">
             <span>राजस्थान</span>
             <span className="foot-line" />
-            <span>जयसिंहपुरा</span>
+            <span>ग्राम पंचायत जयसिंहपुरा</span>
           </div>
         </div>
 
@@ -434,7 +470,7 @@ ${url}`;
 
           <div className="intro-text">
             <p>
-              यह डिजिटल पेज शंकर लाल सांभरिया के परिचय और जयसिंहपुरा
+              यह डिजिटल पेज शंकर लाल सांभरिया के परिचय और ग्राम पंचायत जयसिंहपुरा
               से संबंधित सार्वजनिक जानकारी को एक जगह प्रस्तुत करने के
               लिए बनाया गया है।
             </p>
@@ -444,7 +480,7 @@ ${url}`;
             </p>
             <div className="address-chip">
               <MapPin size={16} />
-              <span>जयसिंहपुरा, जयपुर, राजस्थान</span>
+              <span>ग्राम पंचायत जयसिंहपुरा, जयपुर, राजस्थान</span>
             </div>
           </div>
         </div>
@@ -522,10 +558,17 @@ ${url}`;
           </div>
 
           <div className="symbol-card">
-            <div className="symbol-placeholder">
-              <span>✳</span>
-              <b>चुनाव चिह्न</b>
-              <small>आधिकारिक घोषणा के बाद अपडेट करें</small>
+            <div className="symbol-placeholder symbol-pending">
+              <div className="pending-mark" aria-hidden="true">
+                <span className="pending-ring pending-ring-one" />
+                <span className="pending-ring pending-ring-two" />
+                <span className="pending-center"><b>?</b></span>
+                <i className="pending-dot dot-one" /><i className="pending-dot dot-two" />
+                <i className="pending-dot dot-three" /><i className="pending-dot dot-four" />
+              </div>
+              <span className="pending-eyebrow">OFFICIAL UPDATE AWAITS</span>
+              <b>चुनाव चिह्न जल्द यहाँ होगा</b>
+              <small>अभी आधिकारिक चिह्न घोषित नहीं हुआ है</small>
             </div>
             <p>शंकर लाल सांभरिया</p>
             <small>ग्राम पंचायत जयसिंहपुरा · जयपुर</small>
@@ -544,7 +587,7 @@ ${url}`;
             <div className="village-copy">
               <p className="section-kicker">मिट्टी से जुड़ाव</p>
               <h2 className="section-heading">
-                जयसिंहपुरा,
+                ग्राम पंचायत जयसिंहपुरा,
                 <br />
                 <span>हमारा गाँव।</span>
               </h2>
@@ -574,7 +617,7 @@ ${url}`;
 
           <div className="village-bottom">
             <span>✳</span>
-            <p>जयसिंहपुरा · जयपुर · राजस्थान</p>
+            <p>ग्राम पंचायत जयसिंहपुरा · जयपुर · राजस्थान</p>
             <span>✳</span>
           </div>
         </div>
@@ -594,7 +637,7 @@ ${url}`;
               <span>सुझाव दें।</span>
             </h2>
             <p>
-              जयसिंहपुरा से जुड़ा कोई सुझाव या सवाल है? नीचे लिखें।
+              ग्राम पंचायत जयसिंहपुरा से जुड़ा कोई सुझाव या सवाल है? नीचे लिखें।
               बटन दबाने पर संदेश WhatsApp में खुलेगा और आप उसे भेजने
               से पहले देख सकेंगे।
             </p>
@@ -609,7 +652,7 @@ ${url}`;
               <span className="form-icon"><MessageCircle size={20} /></span>
               <span>
                 <b>अपना सुझाव लिखें</b>
-                <small>जयसिंहपुरा · जनसंवाद</small>
+                <small>ग्राम पंचायत जयसिंहपुरा · जनसंवाद</small>
               </span>
             </div>
 
@@ -649,7 +692,7 @@ ${url}`;
           </a>
 
           <p className="footer-location">
-            <MapPin size={15} /> जयसिंहपुरा, जयपुर, राजस्थान
+            <MapPin size={15} /> ग्राम पंचायत जयसिंहपुरा, जयपुर, राजस्थान
           </p>
 
           <button className="footer-share" onClick={shareWebsite}>
@@ -659,7 +702,7 @@ ${url}`;
         </div>
 
         <div className="footer-bottom">
-          <span>शंकर लाल सांभरिया · जयसिंहपुरा</span>
+          <span>शंकर लाल सांभरिया · ग्राम पंचायत जयसिंहपुरा</span>
           <a href="#home">वापस ऊपर ↑</a>
         </div>
       </footer>

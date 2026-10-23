@@ -304,7 +304,7 @@ ${url}`;
           </div>
 
           <p className="loader-welcome">राम-राम सा!</p>
-          <h1 className="loader-title">ग्राम पंचायत<br /> जयसिंहपुरा</h1>
+          <h1 className="loader-title">ग्राम पंचायत<br />जयसिंहपुरा</h1>
 
           <div className="loader-divider">✳</div>
 
